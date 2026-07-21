@@ -38,6 +38,21 @@
   --shadow:     0 1px 3px rgba(26,26,46,.06), 0 4px 16px rgba(26,26,46,.06);
   --font-serif: 'Lora', Georgia, serif;
   --font-sans:  'DM Sans', system-ui, sans-serif;
+
+  /* Extended palette (upstreamed from revival-dashboard's per-page themes) */
+  --accent-2:   #d8a04a;                 /* warm gold — avatars, hover accents */
+  --bg-sidebar: #1c2333;                 /* alias of --bg-header (dashboard pages) */
+  --red:        #c0392b;                 /* alias of --error */
+  --red-lt:     #fdecea;                 /* alias of --error-bg */
+  --blue:       #2563a8;
+  --blue-lt:    #e8f0fb;
+  --orange:     #b04020;
+  --orange-lt:  #fbe9dc;
+
+  /* Shadow scale (--shadow above kept for back-compat) */
+  --shadow-sm:  0 1px 3px rgba(26,26,46,.06), 0 1px 2px rgba(26,26,46,.04);
+  --shadow-md:  0 4px 16px rgba(26,26,46,.08), 0 1px 4px rgba(26,26,46,.04);
+  --shadow-lg:  0 12px 40px rgba(26,26,46,.12), 0 2px 8px rgba(26,26,46,.06);
 }
 
 /* ── Reset ──────────────────────────────────────────────────────────────────── */
@@ -407,4 +422,27 @@ a.action-card.primary:hover, button.action-card.primary:hover { background: var(
   .app-name { display: none; }
   .auth-chip { padding: 4px 6px; gap: 4px; }
   .admin-card { padding: 16px 18px; }
+}
+
+/* ── Accessibility ──────────────────────────────────────────────────────────── */
+/* Visible keyboard-focus ring on interactive elements. Form fields keep the
+   existing :focus box-shadow ring instead (see Forms above), so they're
+   excluded here to avoid a doubled outline. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible { outline: none; }
+.app-header :focus-visible { outline-color: #fff; }
+
+/* Respect OS-level reduced-motion: collapse decorative animations/transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
