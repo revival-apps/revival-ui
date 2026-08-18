@@ -60,8 +60,16 @@
 
 /* Prevent horizontal scroll — nav header can overflow on narrow viewports.
    Both html AND body must be set; iOS Safari ignores html-only when a
-   position:sticky child has overflow-x:auto. */
+   position:sticky child has overflow-x:auto.
+
+   clip, not hidden: overflow-x hidden turns body into a scroll container,
+   which silently disables position: sticky for every descendant on every
+   page (the thumbnail generator's pinned preview was the first casualty —
+   it had to ship its own page-level override). clip blocks the same
+   sideways scroll without creating a scroll container. Browsers too old
+   to know clip fall back to hidden via the first declaration. */
 html, body { overflow-x: hidden; max-width: 100%; }
+html, body { overflow-x: clip; }
 
 html, body {
   font-family: var(--font-sans);
@@ -379,6 +387,158 @@ a.action-card.primary:hover, button.action-card.primary:hover { background: var(
 .sidebar-card h3 { font-size: .92rem; font-weight: 700; margin: 0 0 4px; color: var(--ink); }
 .sidebar-card .sidebar-desc { font-size: .82rem; color: var(--muted); margin: 0 0 14px; line-height: 1.5; }
 
+/* ── Admin & settings pages ──────────────────────────────────────────────────
+   Upstreamed from design-workflow/views/admin.ejs (2026-08-18), unchanged in
+   name so design can delete its local <style> block without touching markup.
+
+   WHY IT MOVED. These classes were always shared in intent and private in
+   fact: design defined them inline, and this file already carried a
+   `.admin-card { padding: 16px 18px; }` override in the 480px media query —
+   a responsive rule for a class that did not exist here. Facilities needed
+   the same list-management pattern for its leads page, and copying fifty
+   lines of CSS into a second app is how a design system quietly stops being
+   one. Aaron, 2026-08-18: upstream first, then use it.
+
+   The local fallbacks (var(--border, #e8e2db)) are dropped — every token
+   below is defined at the top of this file, so a fallback could only ever
+   mask a typo.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* Sidebar + content layout for a settings page with many sections. */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.admin-nav { list-style: none; margin: 0; padding: 0; }
+.admin-nav li a {
+  display: block; padding: 10px 14px; border-radius: 8px;
+  font-size: 14px; font-weight: 500; color: var(--ink);
+  text-decoration: none; transition: background .12s;
+}
+.admin-nav li a:hover  { background: var(--bg); }
+.admin-nav li a.active { background: var(--accent); color: #fff; }
+.admin-nav-section {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted); padding: 14px 14px 4px;
+}
+
+/* One section of a settings page. Distinct from .card: tighter heading, and a
+   description line that sets up what the controls below it do. */
+.admin-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+}
+.admin-card h2 {
+  font-size: 17px; font-weight: 700; margin: 0 0 4px; color: var(--ink);
+}
+.admin-card .section-desc {
+  font-size: 13px; color: var(--muted); margin: 0 0 24px;
+}
+
+/* A list of email addresses that grants something — admins, leads, editors. */
+.admin-list { list-style: none; margin: 0 0 24px; padding: 0; }
+.admin-list li {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--border); gap: 12px;
+}
+.admin-list li:last-child { border-bottom: none; }
+.admin-email {
+  font-size: 14px; color: var(--ink); font-weight: 500;
+  display: flex; align-items: center; gap: 8px;
+}
+/* Marks the signed-in person in a list they can edit, so "why is there no
+   Remove button on this row" answers itself. */
+.you-badge {
+  font-size: 11px; font-weight: 600; padding: 2px 7px;
+  border-radius: 10px; background: var(--green-lt); color: var(--green);
+}
+
+/* A row in an editable list: label, then actions, with an optional full-width
+   inline edit form as a third wrapped child. */
+.list-mgmt-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 0; border-bottom: 1px solid var(--border); gap: 12px;
+}
+.list-mgmt-row:last-child { border-bottom: none; }
+.list-mgmt-label {
+  font-size: 14px; font-weight: 500; color: var(--ink);
+  display: flex; align-items: center; gap: 8px; flex: 1;
+}
+.list-mgmt-label .sublabel { font-size: 12px; color: var(--muted); font-weight: 400; }
+.list-mgmt-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+.inactive-badge {
+  font-size: 11px; font-weight: 600; padding: 2px 7px;
+  border-radius: 10px; background: var(--bg); color: var(--muted);
+}
+
+/* Add-a-row forms. Two variants because an email field wants a wider minimum
+   than a short slug or name field. */
+.add-admin-form,
+.add-list-form {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end;
+}
+.add-list-form {
+  gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
+}
+.add-admin-form .field,
+.add-list-form .field {
+  display: flex; flex-direction: column; gap: 4px; flex: 1;
+}
+.add-admin-form .field { min-width: 220px; }
+.add-list-form .field { min-width: 160px; }
+.add-admin-form label,
+.add-list-form label {
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  text-transform: none; letter-spacing: 0; margin-bottom: 0;
+}
+.add-admin-form input[type="email"],
+.add-admin-form input[type="text"],
+.add-list-form input[type="text"] {
+  padding: 9px 13px; border-radius: 8px; border: 1.5px solid var(--border);
+  font-size: 14px; color: var(--ink); background: var(--bg-card);
+  outline: none; transition: border-color .15s;
+}
+.add-admin-form input:focus,
+.add-list-form input:focus { border-color: var(--accent); background: #fff; }
+
+.btn-add {
+  padding: 10px 20px; border-radius: 8px; border: none;
+  background: var(--accent); color: #fff; font-size: 14px;
+  font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity .12s;
+}
+.btn-add:hover { opacity: .88; }
+
+.btn-toggle-active,
+.btn-edit {
+  padding: 5px 12px; border-radius: 6px; border: 1.5px solid var(--border);
+  font-size: 12px; font-weight: 600; cursor: pointer; background: var(--bg-card);
+  transition: background .12s, color .12s, border-color .12s;
+}
+.btn-toggle-active { color: var(--muted); }
+.btn-toggle-active:hover { background: var(--bg); }
+.btn-edit { color: var(--ink); }
+.btn-edit:hover { background: var(--blue-lt); border-color: var(--blue); color: var(--blue); }
+
+.inline-edit-wrap {
+  padding: 12px 0 4px; border-top: 1px dashed var(--border); margin-top: 4px;
+}
+.inline-edit-wrap .add-list-form { margin-top: 0; padding-top: 0; border-top: none; }
+
+/* Result of the action just taken. Distinct from .form-banner, which reports
+   the state of a form the person is still filling in. */
+.flash {
+  padding: 12px 16px; border-radius: 8px; font-size: 13px;
+  font-weight: 500; margin-bottom: 20px;
+}
+.flash.success { background: var(--green-lt); color: var(--green); border: 1px solid #a0d4ba; }
+.flash.error   { background: var(--error-bg); color: var(--error); border: 1px solid #f0c0bc; }
+
 /* ── Footer ─────────────────────────────────────────────────────────────────── */
 .site-footer { text-align: center; color: var(--ink-3); font-size: .82rem; padding: 28px 0 48px; }
 
@@ -389,6 +549,10 @@ a.action-card.primary:hover, button.action-card.primary:hover { background: var(
 }
 @media (max-width: 800px) {
   .app-nav-link { padding: 5px 7px; font-size: .75rem; }
+}
+@media (max-width: 700px) {
+  .admin-layout { grid-template-columns: 1fr; }
+  .admin-nav { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
 }
 @media (max-width: 760px) {
   .request-layout { grid-template-columns: 1fr; }
