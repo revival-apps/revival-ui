@@ -539,6 +539,90 @@ a.action-card.primary:hover, button.action-card.primary:hover { background: var(
 .flash.success { background: var(--green-lt); color: var(--green); border: 1px solid #a0d4ba; }
 .flash.error   { background: var(--error-bg); color: var(--error); border: 1px solid #f0c0bc; }
 
+/* ── Request / job cards ─────────────────────────────────────────────────────
+   Upstreamed from design-workflow/views/status.ejs (2026-08-18), same class names
+   so design can delete its local <style> block without touching markup.
+
+   Second batch to move up, after the admin list-management family. Same reason:
+   facilities needed the identical "a list of things with a status" layout for its
+   My Requests page, and Aaron's rule is upstream first, then use.
+
+   WHAT IS DELIBERATELY NOT HERE: design's per-status colour variants
+   (.status-badge.proof-sent, .needs-proof, .revisions …). Those are a print shop's
+   vocabulary. Facilities has four statuses of its own and steward has a giving
+   workflow's. Putting all three sets here would ship every app a dozen classes it
+   will never use, so each app colours its own statuses locally and only the SHAPE
+   is shared. `.status-badge` alone is a legible neutral badge.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.jobs-list {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.job-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 26px;
+  /* Without this a long unbroken description overflows its grid track rather than
+     wrapping — the track is sized from content, not from the container. */
+  min-width: 0;
+}
+
+.job-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.job-title { font-size: 18px; font-weight: 700; color: var(--ink); margin: 0; }
+.job-number { font-size: 13px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+/* The shape only — see the note above about colours. */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.job-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px 24px;
+  font-size: 14px;
+  color: var(--ink);
+}
+.meta-item { display: flex; flex-direction: column; gap: 1px; }
+.meta-label {
+  font-size: 12px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .4px;
+}
+.meta-value { font-weight: 500; }
+
+.job-detail {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.detail-label {
+  font-size: 12px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px;
+}
+.detail-value { font-size: 14px; color: var(--ink); line-height: 1.6; }
+
+.no-results { text-align: center; padding: 40px 20px; color: var(--muted); }
+
 /* ── Footer ─────────────────────────────────────────────────────────────────── */
 .site-footer { text-align: center; color: var(--ink-3); font-size: .82rem; padding: 28px 0 48px; }
 
@@ -560,6 +644,10 @@ a.action-card.primary:hover, button.action-card.primary:hover { background: var(
   .sidebar-card { margin-top: 0; }
 }
 @media (max-width: 560px) {
+  /* Explicit columns: iOS Safari otherwise packs four tiny ones into the auto-fill. */
+  .job-meta { grid-template-columns: 1fr 1fr; gap: 10px 14px; font-size: 13px; }
+  .job-title { font-size: 15px; }
+
   .grid-2 { grid-template-columns: 1fr; gap: 0; }
   .checkbox-group { grid-template-columns: 1fr; }
   .card { padding: 20px; }
@@ -577,6 +665,9 @@ a.action-card.primary:hover, button.action-card.primary:hover { background: var(
   .app-nav-link { font-size: .8rem; padding: 5px 10px; }
 }
 @media (max-width: 480px) {
+  .jobs-list { grid-template-columns: 1fr; }
+  .job-card { padding: 16px 18px; }
+
   .container { padding: 0 14px; }
   .welcome { gap: 12px; padding-top: 20px; margin-bottom: 24px; }
   .welcome-avatar { width: 48px; height: 48px; font-size: 1rem; }
