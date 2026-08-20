@@ -27,11 +27,12 @@
 
   // Keep alphabetical — this order is what renders in every switcher menu.
   var APPS = [
-    { key: 'dashboard', name: 'Dashboard', url: 'https://dashboard.revival.tv' },
-    { key: 'design',    name: 'Design',    url: 'https://design.revival.tv' },
-    { key: 'signage',   name: 'Signage',   url: 'https://signage.revival.tv' },
-    { key: 'steward',   name: 'Steward',   url: 'https://steward.revival.tv' },
-    { key: 'vitals',    name: 'Vitals',    url: 'https://vitals.revival.tv' },
+    { key: 'dashboard',  name: 'Dashboard',  url: 'https://dashboard.revival.tv' },
+    { key: 'design',     name: 'Design',     url: 'https://design.revival.tv' },
+    { key: 'facilities', name: 'Facilities', url: 'https://facilities.revival.tv' },
+    { key: 'signage',    name: 'Signage',    url: 'https://signage.revival.tv' },
+    { key: 'steward',    name: 'Steward',    url: 'https://steward.revival.tv' },
+    { key: 'vitals',     name: 'Vitals',     url: 'https://vitals.revival.tv' },
   ];
 
   function menuItemHtml(app) {
