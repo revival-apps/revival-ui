@@ -701,3 +701,261 @@ textarea:focus-visible { outline: none; }
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Triage queue ─────────────────────────────────────────────────────────
+   Upstreamed 2026-08-21 from design's views/admin-queue.ejs, so facilities'
+   queue can be the same object ("the que in admin should look like the
+   design que" — Aaron). The family: a hero header, per-person workload
+   cards, search, filter/sort/status pills, sections with a dark header and
+   a table that reflows to cards on a phone.
+
+   Status COLOURS are deliberately not here — each app's status vocabulary
+   is its own (.status-badge in this sheet is the shared shape). App-only
+   controls (design's status-override select, repost/delete buttons) also
+   stay local. */
+
+.queue-hero {
+  display: flex; align-items: baseline; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+}
+.queue-hero h1 { font-size: 24px; font-weight: 700; margin: 0; color: var(--ink); }
+.queue-hero-meta { font-size: 13px; color: var(--muted); }
+.btn-reload {
+  font-size: 13px; font-weight: 600; color: var(--accent);
+  background: none; border: 1px solid var(--accent); border-radius: 8px;
+  padding: 5px 14px; cursor: pointer; text-decoration: none;
+  transition: background .12s;
+}
+.btn-reload:hover { background: var(--accent-lt); }
+
+/* Attention banner above the queue — design uses it for unfinished drafts,
+   facilities for missed recurring work. */
+.drafts-banner {
+  background: #f0f7fa; border: 1.5px solid rgba(31,78,95,.18);
+  border-radius: 10px; padding: 14px 18px; margin-bottom: 20px;
+}
+.drafts-banner-title {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+  color: var(--accent); margin: 0 0 10px;
+}
+.draft-row {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 8px 0; border-top: 1px solid rgba(31,78,95,.1);
+}
+.draft-row:first-of-type { border-top: none; padding-top: 0; }
+.draft-row-name { font-weight: 700; color: var(--ink); font-size: 14px; }
+.draft-row-meta { font-size: 12px; color: var(--muted); }
+.draft-row-age { font-size: 11px; font-weight: 600; color: #a06c00; background: #fff8e6; border-radius: 10px; padding: 2px 8px; }
+.draft-row-link {
+  margin-left: auto; font-size: 13px; font-weight: 600; color: var(--accent);
+  text-decoration: none; white-space: nowrap;
+}
+.draft-row-link:hover { text-decoration: underline; }
+
+/* Per-person workload cards. Click filters the queue to that person. */
+.workload-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.workload-card {
+  background: var(--card, #fff); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 10px 14px; min-width: 140px;
+  cursor: pointer; transition: border-color .15s, box-shadow .15s;
+}
+.workload-card:hover { border-color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+.workload-card.active { border-color: var(--accent); background: #f0f7fa; }
+.workload-card-name { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+.workload-card-total { font-size: 22px; font-weight: 800; color: var(--ink); line-height: 1; }
+.workload-card-breakdown { font-size: 11px; color: var(--muted); margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px; }
+.wl-chip { border-radius: 8px; padding: 1px 6px; font-weight: 600; }
+.wl-ip   { background: #edf7ee; color: #277232; }
+.wl-pr   { background: #fff8e6; color: #a06c00; }
+.wl-rev  { background: #fff0e6; color: #b85c00; }
+.wl-wait { background: #f5f0ff; color: #6b3fc2; }
+.wl-hold { background: #f5f5f5; color: #666; }
+.wl-alert { background: #fdecea; color: #c0392b; }
+
+/* Search */
+.queue-search-wrap { margin-bottom: 16px; }
+.queue-search-input {
+  width: 100%; box-sizing: border-box;
+  padding: 9px 14px 9px 36px; font-size: 14px; font-family: inherit;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  color: var(--ink); background: var(--card, #fff);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 12px center;
+  transition: border-color .12s;
+}
+.queue-search-input:focus { outline: none; border-color: var(--accent); }
+.queue-search-input::placeholder { color: var(--muted); }
+
+/* Filter / sort / status pills */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.filter-pill {
+  padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border);
+  background: var(--card, #fff); color: var(--ink-2, #5a5a6e);
+  user-select: none; transition: border-color .1s, color .1s;
+}
+.filter-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.filter-pill:not(.active):hover { border-color: #b0a898; color: var(--ink); }
+.sort-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.sort-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); }
+.sort-pill {
+  padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border);
+  background: var(--card, #fff); color: var(--ink-2, #5a5a6e);
+  user-select: none; transition: border-color .1s, color .1s;
+}
+.sort-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.sort-pill:not(.active):hover { border-color: #b0a898; color: var(--ink); }
+.status-filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; padding: 0; }
+.status-pill {
+  font-size: 12px; font-weight: 500; padding: 4px 12px;
+  border-radius: 99px; border: 1.5px solid var(--border);
+  background: var(--card, #fff); color: var(--muted); cursor: pointer;
+  font-family: inherit; transition: background .15s, color .15s;
+}
+.status-pill.active { background: var(--accent); color: #fff; border-color: transparent; }
+
+/* Sections: dark header bar + table */
+.queue-section { margin-bottom: 32px; }
+.queue-section-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  background: var(--accent); color: #fff;
+  border-radius: 10px 10px 0 0;
+  font-size: 14px; font-weight: 700;
+}
+.queue-section-name { flex: 1; }
+.queue-section-count {
+  font-size: 12px; font-weight: 600; opacity: .75;
+  background: rgba(255,255,255,.15); border-radius: 10px; padding: 2px 9px;
+}
+.queue-rush-count {
+  font-size: 12px; font-weight: 700;
+  background: rgba(255,255,255,.9); color: #a04000; border-radius: 10px; padding: 2px 9px;
+}
+.queue-table-wrap { overflow-x: auto; }
+.queue-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+  background: var(--card, #fff);
+  border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+.queue-table th {
+  text-align: left; padding: 8px 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: .5px;
+  text-transform: uppercase; color: var(--muted);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+.queue-table td {
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  vertical-align: middle; color: var(--ink);
+}
+.queue-table tbody tr:last-child td { border-bottom: none; }
+.queue-table tbody tr:hover td { background: #faf8f5; }
+.queue-job-title {
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  text-decoration: none; display: block; line-height: 1.3;
+}
+.queue-job-title:hover { color: var(--accent); text-decoration: underline; }
+.queue-job-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* Meta chips */
+.chip {
+  font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 8px;
+  white-space: nowrap; display: inline-block;
+}
+.chip-date  { background: #f0f4ff; color: #3d5fc2; }
+.chip-age   { background: var(--bg); color: var(--muted); }
+.chip-age.old   { background: #fff0e6; color: #b85c00; }
+.chip-age.older { background: #fdecea; color: #c0392b; }
+.chip-rush  { background: #fff3e0; color: #a04000; }
+
+/* Actions cell + inline assign */
+.queue-actions-col { white-space: nowrap; text-align: right; }
+.queue-actions-col > * + * { margin-left: 6px; }
+.queue-empty { padding: 40px 0; text-align: center; color: var(--muted); font-size: 14px; }
+.assign-form { display: inline-flex; align-items: center; gap: 6px; }
+.assign-select {
+  font-size: 12px; padding: 4px 8px; border-radius: 6px;
+  border: 1.5px solid var(--border); color: var(--ink);
+  background: var(--card, #fff); cursor: pointer; font-family: inherit;
+}
+.assign-select:focus { outline: none; border-color: var(--accent); }
+.assign-btn {
+  font-size: 12px; font-weight: 600; padding: 4px 12px;
+  border-radius: 6px; border: none; cursor: pointer;
+  background: var(--accent); color: #fff;
+  font-family: inherit; white-space: nowrap;
+}
+.assign-btn:hover { opacity: .85; }
+.assign-btn:disabled { opacity: .5; cursor: not-allowed; }
+.queue-view-link {
+  display: inline-block; padding: 5px 12px; border: 1.5px solid var(--border);
+  border-radius: 7px; font-size: 12px; font-weight: 600; color: var(--ink);
+  text-decoration: none; background: var(--card, #fff); white-space: nowrap;
+}
+.queue-view-link:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Phone reflow: the table becomes stacked cards. Cells opt into their role
+   with classes rather than nth-child, so apps with different column counts
+   share the same rules. */
+@media (max-width: 640px) {
+  .hide-mobile { display: none; }
+  .queue-table-wrap { overflow-x: visible; }
+  .queue-table,
+  .queue-table thead,
+  .queue-table tbody,
+  .queue-table tr,
+  .queue-table td,
+  .queue-table th { display: block; width: 100%; box-sizing: border-box; }
+  .queue-table thead { display: none; }
+  .queue-table tbody tr.queue-row {
+    margin-bottom: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card, #fff);
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  .queue-table td.queue-cell-main {
+    padding: 12px 14px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .queue-table td.queue-cell-status {
+    padding: 8px 14px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .queue-table td.queue-actions-col {
+    padding: 8px 14px 12px;
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    border-bottom: none; text-align: left;
+  }
+  .queue-table td.queue-actions-col .assign-form { flex-wrap: wrap; }
+  .queue-table tbody tr:hover td { background: transparent; }
+}
+
+/* ── Communication settings table ─────────────────────────────────────────
+   design's Communication Settings layout (Event | Email | SMS), shared so
+   facilities' matrix reads as the same object. Checkbox cells are centered;
+   a channel an event can't use shows a dash, and one that is always on says
+   so in words rather than a disabled control. */
+.comms-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.comms-table th {
+  text-align: left; padding: 8px 10px 8px 0;
+  font-size: 11px; font-weight: 700; letter-spacing: .5px;
+  text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.comms-table th.comms-col-check { text-align: center; width: 70px; }
+.comms-table td { padding: 12px 10px 12px 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.comms-table tr:last-child td { border-bottom: none; }
+.comms-event-name { font-weight: 700; color: var(--ink); font-size: 15px; }
+.comms-event-desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.comms-check { text-align: center; }
+.comms-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+.comms-na { text-align: center; color: var(--muted); }
+.comms-freq { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.comms-freq input[type="number"] { width: 56px; padding: 3px 6px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; }
