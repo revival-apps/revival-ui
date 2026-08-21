@@ -977,3 +977,31 @@ textarea:focus-visible { outline: none; }
 }
 .detail-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
 .detail-table tr:last-child td { border-bottom: none; }
+
+/* ── Type-to-search combos (combo.js) ─────────────────────────────────────
+   The input matches the estate's form fields (.add-admin-form's input rules) —
+   Aaron, 2026-08-21: "This search field should have the same styling as the
+   other fields like Display Name." One appearance whether a field is typed,
+   picked, or searched. */
+.combo-wrap { position: relative; }
+.combo-input {
+  width: 100%; box-sizing: border-box;
+  padding: 9px 13px; border-radius: 8px; border: 1.5px solid var(--border);
+  font-size: 14px; font-family: inherit; color: var(--ink);
+  background: var(--bg-card, #fff);
+  outline: none; transition: border-color .15s;
+  -webkit-appearance: none; appearance: none;
+}
+.combo-input:focus { border-color: var(--accent); background: #fff; }
+.combo-input::placeholder { color: var(--muted); }
+.combo-menu {
+  display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 30;
+  margin-top: 4px; background: var(--card, #fff);
+  border: 1px solid var(--border); border-radius: 8px;
+  max-height: 240px; overflow: auto;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .12);
+}
+.combo-opt { padding: 8px 12px; cursor: pointer; font-size: 13px; color: var(--ink); }
+.combo-opt:hover, .combo-opt.active { background: var(--accent-lt, #eef4f6); }
+.combo-sub { font-size: 12px; color: var(--muted); }
+.combo-empty { padding: 8px 12px; color: var(--muted); font-size: 13px; }
