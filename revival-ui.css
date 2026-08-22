@@ -879,20 +879,14 @@ textarea:focus-visible { outline: none; }
 .chip-age.older { background: #fdecea; color: #c0392b; }
 .chip-rush  { background: #fff3e0; color: #a04000; }
 
-/* Actions cell + inline assign. WRAPS rather than clips (Aaron, 2026-08-21:
-   "View Detail doesn't fit") — a crowded row pushes buttons to a second line
-   instead of off the table's edge. */
-.queue-actions-col {
-  white-space: normal; text-align: right;
-  display: flex; flex-wrap: wrap; gap: 6px;
-  justify-content: flex-end; align-items: center;
-}
-/* Inside a table row the cell must stay a cell; flex applies to its content. */
-td.queue-actions-col { display: table-cell; }
-td.queue-actions-col > * { margin: 2px 0 2px 6px; display: inline-flex; vertical-align: middle; }
-/* The type-to-search assign combo, sized for a table row rather than a form. */
-.queue-actions-col .assign-form .combo-wrap { width: 150px; }
-.queue-actions-col .combo-input { font-size: 12px; padding: 4px 8px; }
+/* Actions cell + inline assign. ONE LINE (Aaron, 2026-08-21) — the earlier
+   overflow came from an unbounded control, so the fix is capping the select's
+   width, not wrapping the buttons. The wrapper's overflow-x is the escape hatch
+   on a genuinely narrow window; under 640px the mobile block reflows the cell. */
+.queue-actions-col { white-space: nowrap; text-align: right; }
+.queue-actions-col > * { display: inline-flex; vertical-align: middle; }
+.queue-actions-col > * + * { margin-left: 6px; }
+.queue-actions-col .assign-select { max-width: 150px; }
 .queue-empty { padding: 40px 0; text-align: center; color: var(--muted); font-size: 14px; }
 .assign-form { display: inline-flex; align-items: center; gap: 6px; }
 .assign-select {
