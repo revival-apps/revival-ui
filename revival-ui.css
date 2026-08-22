@@ -895,7 +895,7 @@ textarea:focus-visible { outline: none; }
 .assign-select {
   font-size: 12px; padding: 4px 8px; border-radius: 6px;
   border: 1.5px solid var(--border); color: var(--ink);
-  background: var(--card, #fff); cursor: pointer; font-family: inherit;
+  background: #fff; cursor: pointer; font-family: inherit;
 }
 .assign-select:focus { outline: none; border-color: var(--accent); }
 .assign-btn {
@@ -1043,7 +1043,25 @@ textarea:focus-visible { outline: none; }
 .status-override-select {
   font-size: 11px; padding: 3px 6px; border-radius: 6px;
   border: 1.5px solid var(--border); color: var(--ink);
-  background: var(--card, #fff); cursor: pointer; font-family: inherit;
+  background: #fff; cursor: pointer; font-family: inherit;
   max-width: 130px; margin-top: 5px; display: block;
 }
 .status-override-select:focus { outline: none; border-color: var(--accent); }
+
+
+/* The queue row's Delete — design's .btn-delete-job, shared now facilities has one. */
+.btn-delete-job {
+  font-size: 12px; font-weight: 500; padding: 4px 10px;
+  border-radius: 6px; border: 1.5px solid #fcc; cursor: pointer;
+  background: #fff; color: #c0392b; font-family: inherit; white-space: nowrap;
+}
+.btn-delete-job:hover { background: #fdecea; border-color: #c0392b; }
+
+/* Repost-to-Slack, design's .repost-nts-btn shape. */
+.repost-slack-btn {
+  font-size: 12px; font-weight: 500; padding: 4px 10px;
+  border-radius: 6px; border: 1.5px solid var(--border);
+  cursor: pointer; background: #fff; color: var(--muted);
+  font-family: inherit; white-space: nowrap;
+}
+.repost-slack-btn:hover { border-color: var(--accent); color: var(--accent); }
