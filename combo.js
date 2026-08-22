@@ -199,3 +199,45 @@
     wireAll();
   }
 })();
+
+/**
+ * Shared page behaviors, delegated — so views carry data-* attributes instead of
+ * inline onclick/onsubmit handlers (2026-08-21 ruthless audit, item 8: inline
+ * handlers preclude a strict CSP and scatter behavior across markup).
+ *
+ *   <form data-confirm="Really?">           confirm() before submit
+ *   <button data-toggle="some-id">          toggle #some-id, keep aria-expanded true
+ *   <button data-print>                     window.print()
+ *
+ * Delegated listeners, so markup added later (SSE patches, rendered partials) works
+ * without re-wiring.
+ */
+(function () {
+  'use strict';
+
+  document.addEventListener(
+    'submit',
+    function (e) {
+      var form = e.target.closest('form[data-confirm]');
+      if (form && !window.confirm(form.dataset.confirm)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    true
+  );
+
+  document.addEventListener('click', function (e) {
+    var toggle = e.target.closest('[data-toggle]');
+    if (toggle) {
+      var el = document.getElementById(toggle.dataset.toggle);
+      if (el) {
+        var open = el.style.display === 'none' || getComputedStyle(el).display === 'none';
+        el.style.display = open ? 'block' : 'none';
+        toggle.setAttribute('aria-expanded', String(open));
+      }
+      return;
+    }
+    if (e.target.closest('[data-print]')) window.print();
+  });
+})();
