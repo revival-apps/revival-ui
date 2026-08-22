@@ -1039,3 +1039,14 @@ td.queue-actions-col > * { margin: 2px 0 2px 6px; display: inline-flex; vertical
   .queue-controls { display: none; }
   .queue-controls.open { display: block; }
 }
+
+/* Status dropdown under the badge in a queue row — design's admin-queue control,
+   shared now that facilities has it too (Aaron, 2026-08-21: "Status should also
+   be a dropdown"). */
+.status-override-select {
+  font-size: 11px; padding: 3px 6px; border-radius: 6px;
+  border: 1.5px solid var(--border); color: var(--ink);
+  background: var(--card, #fff); cursor: pointer; font-family: inherit;
+  max-width: 130px; margin-top: 5px; display: block;
+}
+.status-override-select:focus { outline: none; border-color: var(--accent); }
