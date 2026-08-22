@@ -205,7 +205,10 @@ main, header, footer { position: relative; z-index: 1; }
 .welcome {
   display: flex; align-items: center; gap: 18px;
   padding-top: 28px; margin-bottom: 36px;
-  animation: fadeUp .35s ease both; max-width: 960px;
+  animation: fadeUp .35s ease both;
+  /* No own max-width: it sits inside .container and must share the page's left
+     edge — a private 960px cap centered it against wider content below (Aaron,
+     2026-08-21: "Good morning Aaron should line up on the left"). */
 }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
