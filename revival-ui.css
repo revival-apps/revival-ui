@@ -308,9 +308,14 @@ input[type="file"]:focus { outline: none; border-color: var(--accent); box-shado
 .btn-sm { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: .82rem; font-weight: 600; cursor: pointer; background: var(--accent); color: #fff; border: none; }
 .btn-sm.btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
 
+/* BUTTONS: TWO FAMILIES (2026-08-21 facilities UX audit, item 4.2).
+   Full-size primary — .submit-btn (block, forms) and .btn-add (inline, admin) share
+   one visual voice: accent fill, 8px radius, 600 weight, 14px. Compact pill —
+   .btn-pill and its variants, 6px radius, for dense rows. Anything new picks one of
+   the two; a third family is the drift this comment exists to stop. */
 .submit-btn {
   display: inline-block; width: 100%; margin-top: 8px;
-  padding: 13px 20px; font-size: .95rem; font-weight: 600;
+  padding: 13px 20px; font-size: 14px; font-weight: 600;
   font-family: var(--font-sans); color: #fff; background: var(--accent);
   border: none; border-radius: 8px; cursor: pointer;
   text-align: center; text-decoration: none; letter-spacing: .01em;
@@ -507,9 +512,11 @@ a.action-card.primary:hover, button.action-card.primary:hover { background: var(
 .add-admin-form input:focus,
 .add-list-form input:focus { border-color: var(--accent); background: #fff; }
 
+/* The inline member of the full-size primary family — see the BUTTONS note. */
 .btn-add {
   padding: 10px 20px; border-radius: 8px; border: none;
   background: var(--accent); color: #fff; font-size: 14px;
+  font-family: var(--font-sans);
   font-weight: 600; cursor: pointer; white-space: nowrap; transition: opacity .12s;
 }
 .btn-add:hover { opacity: .88; }
@@ -893,7 +900,7 @@ textarea:focus-visible { outline: none; }
 .assign-btn:disabled { opacity: .5; cursor: not-allowed; }
 .queue-view-link {
   display: inline-block; padding: 5px 12px; border: 1.5px solid var(--border);
-  border-radius: 7px; font-size: 12px; font-weight: 600; color: var(--ink);
+  border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--ink);
   text-decoration: none; background: var(--card, #fff); white-space: nowrap;
 }
 .queue-view-link:hover { border-color: var(--accent); color: var(--accent); }
@@ -1005,3 +1012,19 @@ textarea:focus-visible { outline: none; }
 .combo-opt:hover, .combo-opt.active { background: var(--accent-lt, #eef4f6); }
 .combo-sub { font-size: 12px; color: var(--muted); }
 .combo-empty { padding: 8px 12px; color: var(--muted); font-size: 13px; }
+
+
+/* ── Queue controls collapse (2026-08-21 audit, item 8.1) ─────────────────
+   On a phone the workload strip + search + three pill bars sat above the first
+   row. One toggle reclaims the screen; desktop is unchanged. */
+.queue-controls-toggle {
+  display: none; width: 100%; margin-bottom: 12px;
+  padding: 10px 16px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: var(--card, #fff); color: var(--ink); font-size: 14px;
+  font-weight: 600; cursor: pointer; font-family: inherit; text-align: left;
+}
+@media (max-width: 640px) {
+  .queue-controls-toggle { display: block; }
+  .queue-controls { display: none; }
+  .queue-controls.open { display: block; }
+}
